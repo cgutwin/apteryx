@@ -1,0 +1,42 @@
+{
+  "name": "@apteryx/server",
+  "packageManager": "yarn@3.2.0",
+  "author": "Chris Gutwin",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "dependencies": {
+    "apollo-datasource": "^3.3.1",
+    "apollo-server-core": "^3.6.3",
+    "apollo-server-express": "^3.6.3",
+    "express": "^4.17.3",
+    "graphql": "^16.3.0",
+    "graphql-scalars": "^1.14.1",
+    "knex": "^1.0.3",
+    "objection": "^3.0.1",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/typescript": "2.4.5",
+    "@graphql-codegen/typescript-resolvers": "2.5.2",
+    "@types/express": "^4",
+    "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  },
+  "scripts": {
+    "start": "nodemon -r dotenv/config",
+    "ts": "tsc --watch",
+    "build": "tsc",
+    "graphql-codegen": "graphql-codegen --config codegen.yml",
+    "knex:migrate:latest": "knex migrate:latest"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "./lib/**/*",
+      ".env"
+    ],
+    "ext": "js"
+  }
+}

@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  apteryx:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PG_HOST: db
+        PG_DATABASE: ${PG_DATABASE}
+        PG_USER: ${PG_USER}
+        PG_PASSWORD: ${PG_PASSWORD}
+        PG_PORT: 5432
+    command: sh -c "yarn knex migrate:latest && node lib/index.js"
+    expose:
+      - 5000
+    ports:
+      - "5000:4000"
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: postgres:alpine
+    container_name: apteryx_db
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "password"
+    restart: always
