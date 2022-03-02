@@ -1,11 +1,18 @@
 import { gql } from "apollo-server-express"
 
 const productSchema = gql`
-    """Fields required to create a new product in the database."""
+    "Fields required to create a new product in the database."
     input ProductInput {
         name: String!
         price: Float!
         upc: UPC!
+    }
+
+    "Fields required to update a new product in the database. All optional."
+    input PartialProductInput {
+        name: String
+        price: Float
+        upc: UPC
     }
 
     type Product {
@@ -29,17 +36,14 @@ const productSchema = gql`
     type ProductMutation {
         "Create a product given the required ProductInput."
         create(product: ProductInput!): Product!
+        update(upc: UPC!, data: PartialProductInput!): Product!
     }
 
     extend type Query {
         "Query for a product given the UPC-A code."
         product(upc: UPC): Product!
     }
-
-    extend type Mutation {
-        "All mutation functions for product operations."
-        product: ProductMutation!
-    }
 `
 
 export default productSchema
+
