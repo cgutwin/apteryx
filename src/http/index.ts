@@ -1,3 +1,4 @@
+import cors from "cors"
 import express, { Application } from "express"
 import router from "./routes"
 
@@ -16,6 +17,7 @@ export default class ExpressHTTP {
 
   init() {
     this.application.use('/', router)
+    this.application.use(cors())
     this.listen()
   }
 

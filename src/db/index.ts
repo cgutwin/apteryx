@@ -2,6 +2,7 @@
 import knexfile from "../../knexfile"
 import { knex } from "knex"
 
-const knexInstance = knex(knexfile[process.env.NODE_ENV as unknown as string || "development"])
+// TODO: Make dynamic based on NODE_ENV. Set to production for now as some environment variables weren't loading.
+const knexInstance = knex(knexfile["production"])
 
 export default knexInstance

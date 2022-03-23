@@ -1,41 +1,32 @@
 FROM node:lts-alpine as build
-# Install corepack into the lts-alpine version for use with yarn^3.
-RUN npm uninstall -g yarn pnpm
-RUN npm install -g corepack
-
 WORKDIR /usr/src/apteryx
 
-COPY package.json ./
-
-RUN yarn
+COPY package*.json ./
+RUN npm ci
 
 COPY tsconfig.json ./
-COPY src ./src
+COPY src src
+RUN npm run build
 
-RUN yarn run tsc
-
-FROM node:lts-alpine
-
-ARG PG_DATABASE
-ARG PG_HOST
-ARG PG_PASSWORD
-ARG PG_PASSWORD
-ARG PG_PORT
-
+FROM node:lts-alpine as run
+WORKDIR /usr/src/apteryx
 ENV NODE_ENV=production
-ENV PORT=4000
-ENV PG_DATABASE=${PG_DATABASE}
-ENV PG_HOST=${PG_HOST}
-ENV PG_PASSWORD=${PG_PASSWORD}
-ENV PG_PORT=${PG_PORT}
 
-WORKDIR /usr/node/apteryx
+COPY package.json ./
+RUN npm install
 
-COPY data ./data
+COPY --from=build /usr/src/apteryx/lib lib/
+COPY ./data/migrations ./data/migrations
 COPY knexfile.js ./
-COPY --from=build /usr/src/apteryx/package.json ./
-COPY --from=build /usr/src/apteryx/lib ./lib
+COPY docker-entrypoint.sh /usr/local/bin/
+COPY pm2.config.js ./
 
-RUN npm i
+# todo: no 777
+RUN chmod 777 /usr/local/bin/docker-entrypoint.sh && \
+    ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
-EXPOSE ${PORT}
+RUN npm install pm2 -g
+
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+EXPOSE 5000
+CMD [ "pm2-runtime", "start", "pm2.config.js" ]

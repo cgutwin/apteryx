@@ -21,11 +21,10 @@ module.exports = {
   production: {
     client: "pg",
     connection: {
-      host: process.env.PG_HOST,
-      database: process.env.PG_DATABASE,
-      user: process.env.PG_USER,
-      password: process.env.PG_PASSWORD,
-      port: process.env.PG_PORT
+      host: "postgres",
+      database: "postgres",
+      user: "postgres",
+      password: "password",
     },
     migrations: {
       directory: "./data/migrations"
