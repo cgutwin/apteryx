@@ -12,8 +12,9 @@ const expirySchema = gql`
         upc: UPC!
     }
 
-    input ExpiryFilterArg {
-        qualifier: DateQualifier!
+    input ExpiryFilter {
+        qualifier: DateQualifier = ON
+        inclusive: Boolean = false
         date: Date!
     }
 
@@ -29,6 +30,11 @@ const expirySchema = gql`
         deleteByID(id: ID!): Int!
         "Delete all expiring for a given UPC. Returns the number of records deleted."
         deleteByUPC(upc: UPC!): Int!
+    }
+    
+    extend type Query {
+        "Find expiry data for a product, given a UPC and an optional filter."
+        expiryByUPC(upc: UPC!, filter: [ExpiryFilter!]): [Expiry!]
     }
 `
 

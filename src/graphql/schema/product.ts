@@ -24,7 +24,7 @@ const productSchema = gql`
 
         The filter input is defined as either an array of filter(s). Multiple filters in the array are joined with AND.
         """
-        expiry(first: Int = 2, filter: [ExpiryFilterArg!]): [Expiry]!
+        expiry(filter: [ExpiryFilter!]): [Expiry]!
         "Recognizable name of the product."
         name: String!
         "Scalar price value."

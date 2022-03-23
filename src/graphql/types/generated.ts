@@ -29,9 +29,10 @@ export type Expiry = {
   upc: Scalars['UPC'];
 };
 
-export type ExpiryFilterArg = {
+export type ExpiryFilter = {
   date: Scalars['Date'];
-  qualifier: DateQualifier;
+  inclusive?: InputMaybe<Scalars['Boolean']>;
+  qualifier?: InputMaybe<DateQualifier>;
 };
 
 export type ExpiryInput = {
@@ -42,9 +43,9 @@ export type ExpiryInput = {
 export type ExpiryMutation = {
   __typename?: 'ExpiryMutation';
   create: Expiry;
-  /** Delete an expiry given an ID. */
+  /** Delete an expiry given an ID. Returns the number of records deleted. */
   deleteByID: Scalars['Int'];
-  /** Delete all expiring for a given UPC. */
+  /** Delete all expiring for a given UPC. Returns the number of records deleted. */
   deleteByUPC: Scalars['Int'];
 };
 
@@ -99,8 +100,7 @@ export type Product = {
 
 
 export type ProductExpiryArgs = {
-  filter?: InputMaybe<Array<ExpiryFilterArg>>;
-  first?: InputMaybe<Scalars['Int']>;
+  filter?: InputMaybe<Array<ExpiryFilter>>;
 };
 
 /** Fields required to create a new product in the database. */
@@ -130,9 +130,17 @@ export type ProductMutationUpdateArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Find expiry data for a product, given a UPC and an optional filter. */
+  expiryByUPC?: Maybe<Array<Expiry>>;
   ping: Scalars['String'];
   /** Query for a product given the UPC-A code. */
   product: Product;
+};
+
+
+export type QueryExpiryByUpcArgs = {
+  filter?: InputMaybe<Array<ExpiryFilter>>;
+  upc: Scalars['UPC'];
 };
 
 
@@ -213,7 +221,7 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DateQualifier: DateQualifier;
   Expiry: ResolverTypeWrapper<Expiry>;
-  ExpiryFilterArg: ExpiryFilterArg;
+  ExpiryFilter: ExpiryFilter;
   ExpiryInput: ExpiryInput;
   ExpiryMutation: ResolverTypeWrapper<ExpiryMutation>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
@@ -234,7 +242,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Date: Scalars['Date'];
   Expiry: Expiry;
-  ExpiryFilterArg: ExpiryFilterArg;
+  ExpiryFilter: ExpiryFilter;
   ExpiryInput: ExpiryInput;
   ExpiryMutation: ExpiryMutation;
   Float: Scalars['Float'];
@@ -274,7 +282,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
-  expiry?: Resolver<Array<Maybe<ResolversTypes['Expiry']>>, ParentType, ContextType, RequireFields<ProductExpiryArgs, 'first'>>;
+  expiry?: Resolver<Array<Maybe<ResolversTypes['Expiry']>>, ParentType, ContextType, Partial<ProductExpiryArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -289,6 +297,7 @@ export type ProductMutationResolvers<ContextType = any, ParentType extends Resol
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  expiryByUPC?: Resolver<Maybe<Array<ResolversTypes['Expiry']>>, ParentType, ContextType, RequireFields<QueryExpiryByUpcArgs, 'upc'>>;
   ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   product?: Resolver<ResolversTypes['Product'], ParentType, ContextType, Partial<QueryProductArgs>>;
 };

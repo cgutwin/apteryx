@@ -10,6 +10,7 @@ import { NotFoundError } from "objection"
  * @returns {Promise} - A promise that resolves to the product when successfully inserted.
  */
 export async function create<TProduct>(product: TProduct) {
+  // @ts-ignore
   return Product.transaction<Product>(knexInstance, async trx => {
     return Product.query(trx)
                   .insert(product)
@@ -24,6 +25,7 @@ export async function create<TProduct>(product: TProduct) {
  * @returns {Promise} - A promise containing the single product queried.
  */
 export async function findByUPC(upc: ProductInput["upc"]) {
+  // @ts-ignore
   const product = await Product.query(knexInstance)
                                .where("upc", upc)
                                .first()
@@ -45,6 +47,7 @@ export async function findByUPC(upc: ProductInput["upc"]) {
  * @returns {Promise} - A promise containing the patched product.
  */
 export async function patch<TProduct>(upc: ProductInput["upc"], data: TProduct) {
+  // @ts-ignore
   return Product.transaction<Product>(knexInstance, async trx => {
     const productToPatch = await Product.query(trx)
                                         .where("upc", upc)

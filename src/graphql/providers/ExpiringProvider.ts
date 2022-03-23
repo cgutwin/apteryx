@@ -1,10 +1,10 @@
 import { DataSource } from "apollo-datasource"
-import { ExpiryInput, ProductInput } from "../types/generated"
+import { ExpiryInput, QueryExpiryByUpcArgs } from "../types/generated"
 import { create, findByUPC, remove } from "../../services/expiring"
 
 export default class ExpiringProvider extends DataSource {
-  async findByUPC(upc: ProductInput["upc"]) {
-    return findByUPC(upc)
+  async findByUPC(upc: string, args: QueryExpiryByUpcArgs) {
+    return findByUPC({ upc, args })
   }
 
   async create(expiry: ExpiryInput) {
